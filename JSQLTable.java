@@ -53,8 +53,10 @@ public class JSQLTable{
 				
 			//Populate dictionary
 			for(String header: headersName){
-				dictionary.put(header,new Integer(iterator));
-				iterator++;
+				if(!dictionary.containsKey(header)){
+					dictionary.put(header,new Integer(iterator));
+					iterator++;
+				}
 			}
 				
 			while(fileReader.hasNext()){
@@ -392,8 +394,10 @@ public class JSQLTable{
 		}
 		
 		for(String header: headersName){
-			dictionary.put(header,new Integer(iterator));
-			iterator++;
+			if(!dictionary.containsKey(header)){
+				dictionary.put(header,new Integer(iterator));
+				iterator++;
+			}
 		}
 	}
 
@@ -411,4 +415,10 @@ public class JSQLTable{
 	public String getTableName(){
 		return this.tableName;
 	}
+
+	public String[] getHeaders(){
+		return this.headersName;
+	}
+
+
 }
