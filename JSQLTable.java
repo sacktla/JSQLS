@@ -407,4 +407,8 @@ public class JSQLTable{
 			}
 		}	
 	}
+
+	public String getTableName(){
+		return this.tableName;
+	}
 }
