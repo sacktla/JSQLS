@@ -87,6 +87,7 @@ public class JSQLTable{
 		this.tableName = tableName;
 		this.table = new HashMap<String,HashMap<Integer,String>>();
 		this.lineNumber = 0;
+		
 	}
 	
 	//We are going to need editing and selection capacities here as well so that the class JSQLDataBase can call them
@@ -385,14 +386,25 @@ public class JSQLTable{
 	}
 
 	public void setHeaders(String [] headers){
+		this.headersName = new String[headers.length];
 		for(int i = 0; i < headers.length; i++){
 			this.headersName[i] = headers[i];
+		}
+		
+		for(String header: headersName){
+			dictionary.put(header,new Integer(iterator));
+			iterator++;
 		}
 	}
 
 	public void delete(String conditionA, String conditionB){
-		
+		Object[] keys = this.table.keySet().toArray();
+		Arrays.sort(keys);
+
+		for(Object key : keys){
+			if(this.table.get(key).get(this.dictionary.get(conditionA)).equals(conditionB)){
+				this.table.remove(key);
+			}
+		}	
 	}
-	
-	
 }
