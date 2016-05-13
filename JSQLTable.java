@@ -39,8 +39,7 @@ public class JSQLTable{
 			FileInputStream file = new FileInputStream(csvFileName);
 			fileReader = new Scanner(file);			 
 		}catch(IOException e){
-			System.out.println("Problem reading file %".replace("%",csvFileName));
-			throw new IOException();
+			throw new IOException("Problem reading file %".replace("%",csvFileName));
 		}
 
 		
@@ -70,7 +69,6 @@ public class JSQLTable{
 				if(lineSplit.length != this.headersName.length){
 					System.out.println("Line & doesn't contain same number of arguments as headers".replace("&",String.valueOf(lineNumber)));
 					continue;
-					//throw new IOException();
 				}
 				for(int i = 0; i < lineSplit.length; i++){
 					row.put(dictionary.get(this.headersName[i]),lineSplit[i]);
@@ -78,9 +76,9 @@ public class JSQLTable{
 				this.table.put(rowName,row);				
 			}	
 		}else{
-			System.out.println("Empty file");
-			throw new IOException();
+			throw new IOException("Empty file");
 		}	
+		fileReader.close();
 	
 	}
 	
@@ -94,7 +92,7 @@ public class JSQLTable{
 	
 	//We are going to need editing and selection capacities here as well so that the class JSQLDataBase can call them
 	//This method will select data from the table.
-	public String[] selectAll() throws IOException{
+	public String[] selectAll(){
 		//Get all keys of rows
 		Object[] keys = this.table.keySet().toArray();
 		Arrays.sort(keys);
@@ -127,15 +125,14 @@ public class JSQLTable{
 	}
 
 	//Same as above except for selected headers
-	public String[] select(String[] headers) throws IOException{
+	public String[] select(String[] headers) throws JSQLException{
 		String[] fields;
 		Object[] keys = this.table.keySet().toArray();
 		Arrays.sort(keys);
 
 		for(String header: headers){
 			if(!Arrays.asList(this.headersName).contains(header)){
-                        	System.out.println("Header $ passed not found in table!".replace("$",header));
-                            throw new IOException();
+                            throw new JSQLException("Header $ passed not found in table!".replace("$",header));
                         }
                 }
 
@@ -213,7 +210,7 @@ public class JSQLTable{
 		
 	} 	
 
-	public String[] selectWhereEqual(String[] headers, String conditionA, String conditionB) throws IOException{
+	public String[] selectWhereEqual(String[] headers, String conditionA, String conditionB) throws JSQLException{
 		String[] fields;
 		String[] cleanFields;
 		Object[] keys = this.table.keySet().toArray();
@@ -223,8 +220,7 @@ public class JSQLTable{
 
 		for(String header: headers){
 			if(!Arrays.asList(this.headersName).contains(header)){
-                        	System.out.println("Header $ passed not found in table!".replace("$",header));
-                            throw new IOException();
+                            throw new JSQLException("Header $ passed not found in table!".replace("$",header));
                         }
                 }
 
@@ -311,7 +307,7 @@ public class JSQLTable{
 		return cleanFields;
 	}
 
-	public String[] selectWhereNotEqual(String[] headers, String conditionA, String conditionB) throws IOException{
+	public String[] selectWhereNotEqual(String[] headers, String conditionA, String conditionB) throws JSQLException{
 		String[] fields;
 		String[] cleanFields;
 		Object[] keys = this.table.keySet().toArray();
@@ -321,8 +317,7 @@ public class JSQLTable{
 
 		for(String header: headers){
 			if(!Arrays.asList(this.headersName).contains(header)){
-                        	System.out.println("Header $ passed not found in table!".replace("$",header));
-                            throw new IOException();
+                            throw new JSQLException("Header $ passed not found in table!".replace("$",header));
                         }
                 }
 
@@ -368,14 +363,12 @@ public class JSQLTable{
 
 	}
 	//varify that the header does not exist 
-	public void insert(String[] values) throws IOException{	
+	public void insert(String[] values) throws JSQLException{	
 		if(this.headersName == null){
-			System.out.println("Headers have not been initialized");
-			throw new IOException();
+			throw new JSQLException("Headers have not been initialized");
 		}
 		if(values.length != this.headersName.length){
-			System.out.println("Data trying to be added does not contain the same amount of parameters");
-			throw new IOException();
+			throw new JSQLException("Data trying to be added does not contain the same amount of parameters");
 		}else{
 			HashMap<Integer,String> row = new HashMap<Integer,String>();
 			this.lineNumber++;
@@ -418,6 +411,14 @@ public class JSQLTable{
 
 	public String[] getHeaders(){
 		return this.headersName;
+	}
+
+	public HashMap<String,Integer> dictionary(){
+		return dictionary;
+	}
+
+	public HashMap<String,HashMap<Integer,String>> getTableReference(){
+		return this.table;
 	}
 
 

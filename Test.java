@@ -1,22 +1,39 @@
 import java.io.IOException;
 public class Test{
 
-	public static void main(String[] args) throws IOException{
-		JSQLTable table = new JSQLTable("test.csv","TEST_TABLE");
-		String[] tableParam = {"HeaderA","HeaderC"};
-		String[] testLines = table.selectWhereNotEqual(tableParam,"HeaderA", "6");
+	public static void main(String[] args) throws JSQLException{
+		JSQLTable table;
+		try{
+			table = new JSQLTable("test.csv","TableA");
+
 		
-		for(String line : testLines){
+		JSQLTable tableB = new JSQLTable("TableB");
+		JSQLDataBase database = new JSQLDataBase("Database");
+		
+		String[] headers = {"HeaderA","FLAT"};
+		String[] row1 = {"1","5"};
+		String[] row2 = {"7","9"};
+		String[] row3 = {"11","15"};
+		String[] row4 = {"12","20"};
+
+		tableB.setHeaders(headers);
+		tableB.insert(row1);
+		tableB.insert(row2);
+		tableB.insert(row3);
+		tableB.insert(row4);
+
+		database.addTable(table);
+		database.addTable(tableB);
+
+
+		JSQLTable mergedTables = database.joinTwoTables("Merged", "TableA", "TableB", "HeaderA");
+
+		String[] lines = mergedTables.selectAll();
+		for(String line:lines){
 			System.out.println(line);
 		}
-
-		String[] addLines = {"16","17", "18", "19", "20"};
-
-		table.insert(addLines);
-
-		String[] testLines2 = table.selectWhereNotEqual(tableParam,"HeaderA","6");
-		for(String line:testLines2){
-			System.out.println(line);
+		}catch(IOException f){
+			
 		}
 	}
 
