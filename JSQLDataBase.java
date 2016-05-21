@@ -80,10 +80,6 @@ public class JSQLDataBase{
 		Object[] rowsTableB = tableB.getTableReference().keySet().toArray();
 		Arrays.sort(rowsTableB);
 
-		if(rowsTableA.length != rowsTableB.length){
-			throw new JSQLException("Rows length don't match");
-		}
-
 		//Set headers of new table
 		String[] tableAHeaders = tableA.getHeaders();
 		String[] tableBHeaders = tableB.getHeaders();
@@ -110,13 +106,13 @@ public class JSQLDataBase{
 		
 		for(int i = 0; i < rowsTableA.length; i++){
 			for(int j = 0;j<rowsTableB.length; j++){
-				if(tableA.getTableReference().get(rowsTableA[i]).get(tableA.dictionary().get(header)).equals(tableB.getTableReference().get(rowsTableB[j]).get(tableB.dictionary().get(header)))){
+				if(tableA.getTableReference().get(rowsTableA[i]).get(header).equals(tableB.getTableReference().get(rowsTableB[j]).get(header))){
 					String[] row = new String[headers.length];
 					for(int a = 0; a<headers.length;a++){
-						if(tableA.getTableReference().get(rowsTableA[i]).get(tableA.dictionary().get(headers[a])) != null){
-							row[a] = tableA.getTableReference().get(rowsTableA[i]).get(tableA.dictionary().get(headers[a]));
+						if(tableA.getTableReference().get(rowsTableA[i]).get(headers[a]) != null){
+							row[a] = tableA.getTableReference().get(rowsTableA[i]).get(headers[a]);
 						}else{
-							row[a] = tableB.getTableReference().get(rowsTableB[i]).get(tableB.dictionary().get(headers[a]));
+							row[a] = tableB.getTableReference().get(rowsTableB[i]).get(headers[a]);
 						}
 					}
 					

@@ -12,12 +12,9 @@ import java.io.*;
 import java.util.Scanner;
 public class JSQLTable{
 	
-	//Static variables
-	private static HashMap<String,Integer> dictionary = new HashMap<String,Integer>();
-	private static int iterator = 0;
 	//Instance variables
 	private String tableName;
-	private HashMap<String,HashMap<Integer,String>> table;
+	private HashMap<String,HashMap<String,String>> table;
 	private String[] headersName;
 	private int lineNumber;
 		
@@ -34,7 +31,7 @@ public class JSQLTable{
 
 		//instantiate table name
 		this.tableName = tableName;
-		this.table = new HashMap<String,HashMap<Integer,String>>();
+		this.table = new HashMap<String,HashMap<String,String>>();
 
 		try{
 			FileInputStream file = new FileInputStream(csvFileName);
@@ -47,24 +44,14 @@ public class JSQLTable{
 		if(fileReader.hasNext()){
 			lineNumber ++;
 			lineReader = fileReader.nextLine();
-			//System.out.println(lineReader);
 			lineReader = lineReader.trim();
 			this.headersName = lineReader.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 				
-			//Populate dictionary
-			for(String header: headersName){
-				if(!dictionary.containsKey(header)){
-					dictionary.put(header,new Integer(iterator));
-					iterator++;
-				}
-			}
-				
 			while(fileReader.hasNext()){
 				lineNumber++;
-				HashMap<Integer,String> row = new HashMap<Integer,String>();
+				HashMap<String,String> row = new HashMap<String,String>();
 				String rowName = "Row_" + lineNumber;					
 				lineReader = fileReader.nextLine();
-				//System.out.println(lineReader);
 				lineReader = lineReader.trim();
 				lineSplit = lineReader.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 				if(lineSplit.length != this.headersName.length){
@@ -72,7 +59,7 @@ public class JSQLTable{
 					continue;
 				}
 				for(int i = 0; i < lineSplit.length; i++){
-					row.put(dictionary.get(this.headersName[i]),lineSplit[i]);
+					row.put(this.headersName[i],lineSplit[i]);
 				}
 				this.table.put(rowName,row);				
 			}	
@@ -86,7 +73,7 @@ public class JSQLTable{
 	/*Constructor: Initializes a table for fill up later using methods below*/
 	public JSQLTable(String tableName){
 		this.tableName = tableName;
-		this.table = new HashMap<String,HashMap<Integer,String>>();
+		this.table = new HashMap<String,HashMap<String,String>>();
 		this.lineNumber = 0;
 		
 	}
@@ -115,9 +102,9 @@ public class JSQLTable{
 		for(Object key : keys){
 			for(int i = 0; i < headersName.length; i++){
 				if(i<headersName.length-1){
-					fields[counter] += this.table.get(key).get(this.dictionary.get(headersName[i])) + ",";
+					fields[counter] += this.table.get(key).get(headersName[i]) + ",";
 				}else{
-					fields[counter] += this.table.get(key).get(this.dictionary.get(headersName[i]));
+					fields[counter] += this.table.get(key).get(headersName[i]);
 				}
 			}
 			counter++;
@@ -154,7 +141,7 @@ public class JSQLTable{
         for(Object key: keys){
             for(int i = 0; i < headersName.length; i++){
                 if(Arrays.asList(headers).contains(headersName[i])){
-                   	fields[counter] += this.table.get(key).get(this.dictionary.get(headersName[i])) + ",";
+                   	fields[counter] += this.table.get(key).get(headersName[i]) + ",";
                 }
             }
 			counter++;
@@ -190,12 +177,12 @@ public class JSQLTable{
 
 		int counter = 1;
 		for(Object key : keys){
-			if(this.table.get(key).get(this.dictionary.get(conditionA)).equals(conditionB)){
+			if(this.table.get(key).get(conditionA).equals(conditionB)){
 				for(int i = 0; i < headersName.length; i++){
 					if(i<headersName.length-1){
-						fields[counter] += this.table.get(key).get(this.dictionary.get(headersName[i])) + ",";
+						fields[counter] += this.table.get(key).get(headersName[i]) + ",";
 					}else{
-						fields[counter] += this.table.get(key).get(this.dictionary.get(headersName[i]));
+						fields[counter] += this.table.get(key).get(headersName[i]);
 					}
 				}
 				counter++;
@@ -241,10 +228,10 @@ public class JSQLTable{
 
 		int counter = 1;
 		for(Object key: keys){
-			if(this.table.get(key).get(this.dictionary.get(conditionA)).equals(conditionB)){
+			if(this.table.get(key).get(conditionA).equals(conditionB)){
 	            for(int i = 0; i < headersName.length; i++){
 	                if(Arrays.asList(headers).contains(headersName[i])){
-	                   	fields[counter] += this.table.get(key).get(this.dictionary.get(headersName[i])) + ",";
+	                   	fields[counter] += this.table.get(key).get(headersName[i]) + ",";
 	                }
 	            }
 	            counter++;
@@ -288,12 +275,12 @@ public class JSQLTable{
 
 		int counter = 1;
 		for(Object key : keys){
-			if(!this.table.get(key).get(this.dictionary.get(conditionA)).equals(conditionB)){
+			if(!this.table.get(key).get(conditionA).equals(conditionB)){
 				for(int i = 0; i < headersName.length; i++){
 					if(i<headersName.length-1){
-						fields[counter] += this.table.get(key).get(this.dictionary.get(headersName[i])) + ",";
+						fields[counter] += this.table.get(key).get(headersName[i]) + ",";
 					}else{
-						fields[counter] += this.table.get(key).get(this.dictionary.get(headersName[i]));
+						fields[counter] += this.table.get(key).get(headersName[i]);
 					}
 				}
 				counter++;
@@ -338,10 +325,10 @@ public class JSQLTable{
 
 		int counter = 1;
 		for(Object key: keys){
-			if(!this.table.get(key).get(this.dictionary.get(conditionA)).equals(conditionB)){
+			if(!this.table.get(key).get(conditionA).equals(conditionB)){
 	            for(int i = 0; i < headersName.length; i++){
 	                if(Arrays.asList(headers).contains(headersName[i])){
-	                   	fields[counter] += this.table.get(key).get(this.dictionary.get(headersName[i])) + ",";
+	                   	fields[counter] += this.table.get(key).get(headersName[i]) + ",";
 	                }
 	            }
 	            counter++;
@@ -371,11 +358,11 @@ public class JSQLTable{
 		if(values.length != this.headersName.length){
 			throw new JSQLException("Data trying to be added does not contain the same amount of parameters");
 		}else{
-			HashMap<Integer,String> row = new HashMap<Integer,String>();
+			HashMap<String,String> row = new HashMap<String,String>();
 			this.lineNumber++;
 			String rowName = "Row_" + lineNumber;
 			for(int i = 0; i < values.length; i++){
-				row.put(dictionary.get(this.headersName[i]),values[i]);
+				row.put(this.headersName[i],values[i]);
 			}
 			this.table.put(rowName,row);
 		}
@@ -386,13 +373,6 @@ public class JSQLTable{
 		for(int i = 0; i < headers.length; i++){
 			this.headersName[i] = headers[i];
 		}
-		
-		for(String header: headersName){
-			if(!dictionary.containsKey(header)){
-				dictionary.put(header,new Integer(iterator));
-				iterator++;
-			}
-		}
 	}
 	//DELETES ROW OF DATA OF TABLE WHERE CONDITIONA(HEADER) == CONDITIONB(VALUE)
 	public void delete(String conditionA, String conditionB){
@@ -400,7 +380,7 @@ public class JSQLTable{
 		Arrays.sort(keys);
 
 		for(Object key : keys){
-			if(this.table.get(key).get(this.dictionary.get(conditionA)).equals(conditionB)){
+			if(this.table.get(key).get(conditionA).equals(conditionB)){
 				this.table.remove(key);
 			}
 		}	
@@ -413,12 +393,9 @@ public class JSQLTable{
 	public String[] getHeaders(){
 		return this.headersName;
 	}
-	//RETURNS THE DICTIONARY
-	public HashMap<String,Integer> dictionary(){
-		return dictionary;
-	}
+	
 	//RETURNS THE TABLE REFERENCE
-	public HashMap<String,HashMap<Integer,String>> getTableReference(){
+	public HashMap<String,HashMap<String,String>> getTableReference(){
 		return this.table;
 	}
 
